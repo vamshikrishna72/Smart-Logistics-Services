@@ -1,0 +1,501 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <!-- Add Location Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Add Location</h5>
+                    <form id="locationForm">
+                        <div class="mb-3">
+                            <label for="locationName" class="form-label">Location Name*</label>
+                            <input type="text" class="form-control" id="locationName" required 
+                                   placeholder="e.g., Warehouse A">
+                            <small class="text-muted">Give your location a unique name</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="latitude" class="form-label">Latitude*</label>
+                            <input type="number" step="any" class="form-control" id="latitude" required
+                                   placeholder="e.g., 17.3850">
+                            <small class="text-muted">Enter latitude in decimal degrees</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="longitude" class="form-label">Longitude*</label>
+                            <input type="number" step="any" class="form-control" id="longitude" required
+                                   placeholder="e.g., 78.4867">
+                            <small class="text-muted">Enter longitude in decimal degrees</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-plus-circle me-2"></i>Add Location
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Route Options Card -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Route Options</h5>
+                    <form id="pathForm">
+                        <div class="mb-3">
+                            <label for="startPoint" class="form-label">Start Point*</label>
+                            <select class="form-control" id="startPoint" required>
+                                <option value="">Select start point...</option>
+                            </select>
+                            <small class="text-muted">Choose your starting location</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="endPoint" class="form-label">End Point*</label>
+                            <select class="form-control" id="endPoint" required>
+                                <option value="">Select end point...</option>
+                            </select>
+                            <small class="text-muted">Choose your destination</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="weather" class="form-label">Weather Condition</label>
+                            <select class="form-control" id="weather">
+                                <option value="clear">Clear (Normal conditions)</option>
+                                <option value="rain">Rain (20% longer)</option>
+                                <option value="snow">Snow (50% longer)</option>
+                            </select>
+                            <small class="text-muted">Weather affects travel time and cost</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="traffic" class="form-label">Traffic Level</label>
+                            <select class="form-control" id="traffic">
+                                <option value="low">Low (Normal conditions)</option>
+                                <option value="medium">Medium (30% longer)</option>
+                                <option value="high">High (60% longer)</option>
+                            </select>
+                            <small class="text-muted">Traffic affects travel time and cost</small>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="fas fa-route me-2"></i>Find Optimal Route
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <!-- Map Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-0">
+                    <div id="map" style="height: 500px; border-radius: 8px;"></div>
+                </div>
+            </div>
+            
+            <!-- Results Card -->
+            <div id="results" class="card shadow-sm d-none">
+                <div class="card-body">
+                    <h5 class="card-title text-primary fw-bold">Route Analysis</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="metric-card text-center p-3">
+                                <i class="fas fa-road fa-2x mb-2 text-primary"></i>
+                                <h6 class="text-dark fw-bold">Total Distance</h6>
+                                <p id="distanceResult" class="h3 mb-0 text-primary fw-bold">-</p>
+                                <small class="text-muted fw-semibold">Kilometers</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="metric-card text-center p-3">
+                                <i class="fas fa-dollar-sign fa-2x mb-2 text-success"></i>
+                                <h6 class="text-dark fw-bold">Predicted Cost</h6>
+                                <p id="costResult" class="h3 mb-0 text-success fw-bold">-</p>
+                                <small class="text-muted fw-semibold">Based on ML model</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="metric-card text-center p-3">
+                                <i class="fas fa-clock fa-2x mb-2 text-warning"></i>
+                                <h6 class="text-dark fw-bold">Estimated Time</h6>
+                                <p id="timeResult" class="h3 mb-0 text-warning fw-bold">-</p>
+                                <small class="text-muted fw-semibold">Minutes</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h6 class="text-primary fw-bold mb-3">Route Details</h6>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-dark fw-bold" style="width: 150px;">Path</td>
+                                        <td id="pathResult" class="text-primary fw-semibold">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-dark fw-bold">Weather Impact</td>
+                                        <td id="weatherResult" class="text-info fw-semibold">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-dark fw-bold">Traffic Impact</td>
+                                        <td id="trafficResult" class="text-danger fw-semibold">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Initialize map
+    let map = L.map('map').setView([17.3850, 78.4867], 10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    
+    // Store markers and paths
+    let markers = [];
+    let path = null;
+    let startMarker = null;
+    let endMarker = null;
+    
+    // Add click handler for map
+    map.on('click', function(e) {
+        // Create custom dialog
+        const dialog = $('<div>').addClass('modal fade').attr('id', 'pointTypeDialog');
+        const content = `
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" style="color: #1a237e; font-weight: 600;">Select Point Type</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p style="color: #283593; font-size: 1.1em; font-weight: 500;">Choose the type of point to set:</p>
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-primary" id="setStartPoint">Set Start Point</button>
+                            <button type="button" class="btn btn-secondary" id="setEndPoint">Set End Point</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        dialog.html(content);
+        $('body').append(dialog);
+        
+        const lat = e.latlng.lat;
+        const lon = e.latlng.lng;
+        
+        dialog.modal('show');
+        
+        // Handle point type selection
+        $('#setStartPoint, #setEndPoint').on('click', function() {
+            const isStart = $(this).attr('id') === 'setStartPoint';
+            const pointName = `${isStart ? 'Start' : 'End'} Point (${lat.toFixed(4)}, ${lon.toFixed(4)})`;
+            
+            // Add location to server
+            $.ajax({
+                url: '/add_location',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    name: pointName,
+                    lat: lat,
+                    lon: lon
+                }),
+                success: function(response) {
+                    // Remove existing start/end marker if exists
+                    if (isStart && startMarker) {
+                        map.removeLayer(startMarker);
+                    } else if (!isStart && endMarker) {
+                        map.removeLayer(endMarker);
+                    }
+                    
+                    // Add new marker with default blue icon
+                    const marker = L.marker([lat, lon], {
+                        icon: L.icon({
+                            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [1, -34],
+                            shadowSize: [41, 41]
+                        })
+                    }).bindPopup(pointName).addTo(map);
+                    
+                    // Store marker reference
+                    if (isStart) {
+                        startMarker = marker;
+                        $('#startPoint').val(pointName);
+                    } else {
+                        endMarker = marker;
+                        $('#endPoint').val(pointName);
+                    }
+                    
+                    // Update dropdowns
+                    updateLocationDropdowns(response.locations);
+                    
+                    // Show success message
+                    showToast('Success', `${isStart ? 'Start' : 'End'} point set successfully`);
+                    
+                    // Close and remove the dialog
+                    dialog.modal('hide');
+                    setTimeout(() => {
+                        dialog.remove();
+                    }, 300);
+                },
+                error: function(xhr) {
+                    showToast('Error', 'Failed to add point: ' + xhr.responseJSON.error);
+                    dialog.modal('hide');
+                    dialog.remove();
+                }
+            });
+        });
+        
+        // Remove dialog when hidden
+        dialog.on('hidden.bs.modal', function() {
+            dialog.remove();
+        });
+    });
+    
+    // Handle adding a new location
+    $('#locationForm').submit(function(e) {
+        e.preventDefault();
+        
+        const data = {
+            name: $('#locationName').val(),
+            lat: parseFloat($('#latitude').val()),
+            lon: parseFloat($('#longitude').val())
+        };
+        
+        $.ajax({
+            url: '/add_location',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(response) {
+                // Add marker to map
+                let marker = L.marker([data.lat, data.lon])
+                    .bindPopup(data.name)
+                    .addTo(map);
+                markers.push(marker);
+                
+                // Update location dropdowns
+                updateLocationDropdowns(response.locations);
+                
+                // Clear form
+                $('#locationForm')[0].reset();
+                
+                // Show success message
+                showToast('Success', 'Location added successfully');
+            },
+            error: function(xhr) {
+                showToast('Error', 'Failed to add location: ' + xhr.responseJSON.error);
+            }
+        });
+    });
+
+    // Handle finding path
+    $('#pathForm').submit(function(e) {
+        e.preventDefault();
+        
+        const data = {
+            start: $('#startPoint').val(),
+            end: $('#endPoint').val(),
+            weather: $('#weather').val(),
+            traffic: $('#traffic').val()
+        };
+        
+        // Validate form
+        if (!data.start || !data.end) {
+            showToast('Error', 'Please select both start and end points');
+            return;
+        }
+        
+        $.ajax({
+            url: '/find_path',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(response) {
+                // Remove existing path
+                if (path) {
+                    map.removeLayer(path);
+                }
+                
+                // Draw new path
+                let coordinates = response.path.map(point => {
+                    let [lat, lon] = point.split(',').map(Number);
+                    return [lat, lon];
+                });
+                
+                path = L.polyline(coordinates, {
+                    color: 'red',
+                    weight: 3
+                }).addTo(map);
+                
+                // Fit map to show entire path
+                map.fitBounds(path.getBounds());
+                
+                // Show results
+                $('#results').removeClass('d-none');
+                $('#pathResult').text(data.start + ' → ' + data.end);
+                $('#distanceResult').text(response.distance.toFixed(2));
+                $('#costResult').text(response.predicted_cost);
+                
+                // Calculate estimated time based on conditions
+                let baseTime = (response.distance / 50) * 60; // 50 km/h average speed
+                let weatherMultiplier = data.weather === 'rain' ? 1.2 : (data.weather === 'snow' ? 1.5 : 1);
+                let trafficMultiplier = data.traffic === 'high' ? 1.6 : (data.traffic === 'medium' ? 1.3 : 1);
+                let estimatedTime = Math.round(baseTime * weatherMultiplier * trafficMultiplier);
+                
+                $('#timeResult').text(estimatedTime);
+                $('#weatherResult').text(getWeatherImpact(data.weather));
+                $('#trafficResult').text(getTrafficImpact(data.traffic));
+                
+                showToast('Success', 'Route found successfully');
+            },
+            error: function(xhr) {
+                showToast('Error', 'Failed to find route: ' + (xhr.responseJSON?.error || 'Unknown error'));
+            }
+        });
+    });
+
+    // Update location dropdowns
+    function updateLocationDropdowns(locations) {
+        const dropdowns = ['#startPoint', '#endPoint'];
+        
+        dropdowns.forEach(dropdown => {
+            const select = $(dropdown);
+            const currentVal = select.val();
+            
+            // Clear existing options except the first one
+            select.find('option:not(:first)').remove();
+            
+            // Add new options
+            locations.forEach(location => {
+                select.append($('<option>', {
+                    value: location,
+                    text: location
+                }));
+            });
+            
+            // Restore previous selection if it still exists
+            if (locations.includes(currentVal)) {
+                select.val(currentVal);
+            }
+        });
+    }
+
+    // Get weather impact description
+    function getWeatherImpact(weather) {
+        switch(weather) {
+            case 'rain': return 'Rain (20% longer travel time)';
+            case 'snow': return 'Snow (50% longer travel time)';
+            default: return 'Clear (normal conditions)';
+        }
+    }
+
+    // Get traffic impact description
+    function getTrafficImpact(traffic) {
+        switch(traffic) {
+            case 'high': return 'High (60% longer travel time)';
+            case 'medium': return 'Medium (30% longer travel time)';
+            default: return 'Low (normal conditions)';
+        }
+    }
+
+    // Show toast notification
+    function showToast(title, message) {
+        $('.toast').remove(); // Remove any existing toasts
+        
+        const toast = $(`
+            <div class="toast position-fixed bottom-0 end-0 m-3" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header ${title === 'Error' ? 'bg-danger text-white' : 'bg-success text-white'}">
+                    <strong class="me-auto">${title}</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            </div>
+        `);
+        
+        $('body').append(toast);
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+    }
+});
+</script>
+
+<style>
+.metric-card {
+    background: #ffffff;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+.metric-card i {
+    font-size: 2.5rem;
+}
+.metric-card h6 {
+    font-size: 1rem;
+    margin: 1rem 0;
+}
+.metric-card p {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+}
+.metric-card small {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+.toast {
+    z-index: 1100;
+}
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+.text-primary {
+    color: #4361ee !important;
+}
+.text-success {
+    color: #2ecc71 !important;
+}
+.text-warning {
+    color: #f39c12 !important;
+}
+.text-info {
+    color: #3498db !important;
+}
+.text-danger {
+    color: #e74c3c !important;
+}
+.text-dark {
+    color: #2c3e50 !important;
+}
+.fw-bold {
+    font-weight: 700 !important;
+}
+.fw-semibold {
+    font-weight: 600 !important;
+}
+.marker-pin {
+    width: 30px;
+    height: 42px;
+    background-size: 30px 42px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.marker-pin.start {
+    background-image: url('https://cdn-icons-png.flaticon.com/512/25/25694.png');
+}
+.marker-pin.end {
+    background-image: url('https://cdn-icons-png.flaticon.com/512/25/25694.png');
+    transform: rotate(180deg);
+}
+</style>
+{% endblock %}

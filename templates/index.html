@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="main-title">Smart Logistics Container Services</h1>
+        <p class="main-subtitle">Efficiently manage your delivery routes with advanced AI-powered optimization</p>
+        
+        <div class="hero-image-container">
+            <img src="/static/images/banner1.png" 
+                 alt="Logistics Banner" 
+                 class="hero-image"
+                 style="width: 100%; max-width: 1200px; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); opacity: 0.8;">
+        </div>
+        
+        <div class="feature-section">
+            <div class="feature-item">
+                <i class="fas fa-route fa-2x mb-3" style="color: var(--neon-blue)"></i>
+                <h3 class="feature-title">Route Optimization</h3>
+                <p>Find the most efficient paths with our advanced algorithms</p>
+                <a href="/route_optimizer" class="btn btn-primary">Try Now</a>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-truck fa-2x mb-3" style="color: var(--neon-blue)"></i>
+                <h3 class="feature-title">Fleet Management</h3>
+                <p>Track and manage your fleet in real-time</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-chart-line fa-2x mb-3" style="color: var(--neon-blue)"></i>
+                <h3 class="feature-title">Real-time Analytics</h3>
+                <p>Make data-driven decisions with our ML model</p>
+                <a href="/dashboard" class="btn btn-primary">View Analytics</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div id="map"></div>
+            </div>
+            
+            <!-- ML Model Performance -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h3 class="card-title">AI Model Performance</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="feature-item">
+                                <i class="fas fa-brain fa-2x mb-3" style="color: var(--neon-blue)"></i>
+                                <h4 class="feature-title">Model Accuracy</h4>
+                                <p class="main-subtitle">95.2%</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="feature-item">
+                                <h4 class="feature-title">Key Features</h4>
+                                <div class="feature-list">
+                                    <div class="feature-stat">
+                                        <span>Distance</span>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 78.5%" aria-valuenow="78.5" aria-valuemin="0" aria-valuemax="100">78.5%</div>
+                                        </div>
+                                    </div>
+                                    <div class="feature-stat">
+                                        <span>Traffic</span>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 7.9%" aria-valuenow="7.9" aria-valuemin="0" aria-valuemax="100">7.9%</div>
+                                        </div>
+                                    </div>
+                                    <div class="feature-stat">
+                                        <span>Weather</span>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 4.3%" aria-valuenow="4.3" aria-valuemin="0" aria-valuemax="100">4.3%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Quick Actions</h3>
+                    <div class="d-grid gap-3">
+                        <a href="/route_optimizer" class="btn btn-primary btn-lg">
+                            <i class="fas fa-route me-2"></i>Find Optimal Route
+                        </a>
+                        <a href="/dashboard" class="btn btn-success btn-lg">
+                            <i class="fas fa-chart-bar me-2"></i>View Analytics
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<style>
+.hero-image-container {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.hero-image {
+    width: 100%;
+    max-width: 1200px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.hero-image:hover {
+    transform: scale(1.02);
+}
+
+.feature-section {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.feature-item {
+    flex: 1;
+    min-width: 250px;
+    padding: 1.5rem;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-5px);
+}
+</style>
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Initialize map
+    let map = L.map('map').setView([17.3850, 78.4867], 10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+});
+</script>
+{% endblock %}

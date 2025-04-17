@@ -1,0 +1,6 @@
+shipment_id,container_type,weight_kg,volume_m3,origin_lat,origin_lng,destination_lat,destination_lng,delivery_priority,transport_mode,estimated_cost
+SH001,Standard,1200,20,19.076,72.8777,28.6139,77.209,High,Sea,5000
+SH002,Refrigerated,800,15,28.6139,77.209,12.9716,77.5946,Medium,Air,8000
+SH003,Standard,1500,25,12.9716,77.5946,13.0827,80.2707,High,Truck,3000
+SH004,Oversized,2000,35,13.0827,80.2707,17.385,78.4867,Low,Sea,6000
+SH005,Standard,900,18,17.385,78.4867,19.076,72.8777,Medium,Truck,2500

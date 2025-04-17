@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Logistics Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">🚚 Smart Logistics Optimizer</a>
+            <div class="ms-auto">
+                <a href="/optimizer" class="btn btn-primary nav-btn">Go to Route Optimizer</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="row g-0">
+                        <div class="col-md-8">
+                            <h3 class="card-title">Performance Overview</h3>
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <div class="feature-item">
+                                        <i class="fas fa-truck-loading fa-2x mb-3" style="color: var(--neon-blue)"></i>
+                                        <h4 class="feature-title">Total Deliveries</h4>
+                                        <p class="main-subtitle">1,234</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="feature-item">
+                                        <i class="fas fa-clock fa-2x mb-3" style="color: var(--neon-blue)"></i>
+                                        <h4 class="feature-title">On-Time Rate</h4>
+                                        <p class="main-subtitle">98.5%</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="feature-item">
+                                        <i class="fas fa-dollar-sign fa-2x mb-3" style="color: var(--neon-blue)"></i>
+                                        <h4 class="feature-title">Avg Cost/Delivery</h4>
+                                        <p class="main-subtitle">$12.45</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <img src="https://img.freepik.com/free-photo/business-concept-with-graphic-holography_23-2149160932.jpg" 
+                                 alt="Analytics Dashboard" 
+                                 class="img-fluid rounded-end" 
+                                 style="height: 100%; object-fit: cover;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <h3 class="card-title">Recent Routes</h3>
+                    <div class="delivery-points-list">
+                        <div class="delivery-point">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="point-number">Route #1234</div>
+                                    <div class="coordinates">12 stops • 45.2 km • 2h 15m</div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="weight-info">$125.50</div>
+                                    <small class="text-muted">Cost</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="delivery-point">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="point-number">Route #1233</div>
+                                    <div class="coordinates">8 stops • 32.8 km • 1h 45m</div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="weight-info">$98.75</div>
+                                    <small class="text-muted">Cost</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <h3 class="card-title">Fleet Status</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src="https://img.freepik.com/free-photo/delivery-truck-with-gps-mark-point-location-pin-tracking_43780-451.jpg" 
+                                 alt="Fleet Status" 
+                                 class="img-fluid rounded mb-3">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="delivery-point">
+                                <div class="point-number">Active Vehicles</div>
+                                <div class="coordinates">8/10 Available</div>
+                            </div>
+                            <div class="delivery-point">
+                                <div class="point-number">System Health</div>
+                                <div class="coordinates">Optimal</div>
+                            </div>
+                            <div class="delivery-point">
+                                <div class="point-number">Next Maintenance</div>
+                                <div class="coordinates">2 days</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <h3 class="card-title">Quick Actions</h3>
+                    <div class="d-grid gap-3">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>
+                            Create New Route
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-list me-2"></i>
+                            View All Routes
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-file-alt me-2"></i>
+                            Generate Report
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <h3 class="card-title">Weather Impact</h3>
+                    <div class="weather-icons d-flex justify-content-around mb-3">
+                        <img src="{{ url_for('static', filename='images/temperature.svg') }}" 
+                             alt="Temperature" 
+                             class="weather-icon">
+                        <img src="{{ url_for('static', filename='images/humidity.svg') }}" 
+                             alt="Humidity" 
+                             class="weather-icon">
+                        <img src="{{ url_for('static', filename='images/wind.svg') }}" 
+                             alt="Wind" 
+                             class="weather-icon">
+                    </div>
+                    <div class="delivery-point">
+                        <div class="point-number">Current Conditions</div>
+                        <div class="coordinates">Clear • 24°C</div>
+                        <div class="weight-info">Low Impact on Routes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

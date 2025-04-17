@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Route Map - Smart Logistics Optimizer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --accent-color: #f72585;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+        
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            max-width: 300px;
+        }
+        
+        .route-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: var(--bg-color);
+            border-radius: 5px;
+        }
+
+        .cost-badge {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="info-panel">
+        <h4><i class="fas fa-route"></i> Route Information</h4>
+        <div id="routeInfo" class="route-info">
+            <p>Loading route information...</p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map centered on India
+        const map = L.map('map').setView([20.5937, 78.9629], 5);
+        
+        // Add the tile layer (OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: ' OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Function to update route information
+        function updateRouteInfo(routes) {
+            const routeInfo = document.getElementById('routeInfo');
+            let html = '';
+            
+            Object.entries(routes).forEach(([routeId, points]) => {
+                const distance = calculateDistance(points);
+                html += `<div class="mb-3">
+                    <strong>Route ${parseInt(routeId) + 1}</strong><br>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Points: ${points.length}</span>
+                        <span class="cost-badge">$${points.cost || '0.00'}</span>
+                    </div>
+                    <div class="mt-1">
+                        <small>Distance: ${distance.toFixed(2)} km</small><br>
+                        <small>Est. Time: ${Math.round(distance * 2)} mins</small>
+                    </div>
+                </div>`;
+            });
+            
+            routeInfo.innerHTML = html;
+        }
+
+        // Function to calculate route distance
+        function calculateDistance(points) {
+            let distance = 0;
+            for (let i = 0; i < points.length - 1; i++) {
+                const start = L.latLng(points[i].lat, points[i].lng);
+                const end = L.latLng(points[i + 1].lat, points[i + 1].lng);
+                distance += start.distanceTo(end) / 1000; // Convert to kilometers
+            }
+            return distance;
+        }
+
+        // Function to draw routes on the map
+        function drawRoutes(routes) {
+            const colors = ['#4361ee', '#f72585', '#4cc9f0', '#3f37c9', '#7209b7'];
+            
+            Object.entries(routes).forEach(([routeId, points], index) => {
+                const color = colors[index % colors.length];
+                const coordinates = points.map(p => [p.lat, p.lng]);
+                
+                // Draw the route line
+                L.polyline(coordinates, {
+                    color: color,
+                    weight: 3,
+                    opacity: 0.8
+                }).addTo(map);
+                
+                // Add markers for each point
+                points.forEach((point, i) => {
+                    L.marker([point.lat, point.lng])
+                        .bindPopup(`
+                            <div class="text-center">
+                                <strong>Route ${parseInt(routeId) + 1}, Stop ${i + 1}</strong><br>
+                                Weight: ${point.weight}kg<br>
+                                ${point.cost ? `<span class="cost-badge">$${point.cost}</span>` : ''}
+                            </div>
+                        `)
+                        .addTo(map);
+                });
+            });
+        }
+
+        // Fetch and display routes
+        fetch('/optimize', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                delivery_points: [],  // Will be populated from server
+                n_vehicles: 3
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.routes) {
+                drawRoutes(data.routes);
+                updateRouteInfo(data.routes);
+            } else if (data.error) {
+                document.getElementById('routeInfo').innerHTML = `Error: ${data.error}`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('routeInfo').innerHTML = 'Error loading route information.';
+        });
+    </script>
+</body>
+</html>
