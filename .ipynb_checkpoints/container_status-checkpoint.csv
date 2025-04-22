@@ -1,0 +1,6 @@
+container_id,status,location_lat,location_lng,completion_percentage,carrier,last_updated
+CNT001,In Transit,22.5726,88.3639,75,DHL,2025-03-22 10:30
+CNT002,Loading,19.076,72.8777,25,FedEx,2025-03-22 09:45
+CNT003,Delivered,13.0827,80.2707,100,USPS,2025-03-22 08:15
+CNT004,At Port,17.385,78.4867,45,Maersk,2025-03-22 11:00
+CNT005,In Transit,25.2048,55.2708,60,DHL,2025-03-22 10:00
