@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Logistics Optimizer — Enterprise AI Platform v2.0{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="text-center mb-5">
+    <h1 class="main-title">Smart Logistics Container Services</h1>
+    <p class="main-subtitle">Efficiently manage your delivery routes with advanced AI-powered optimization & predictive ML</p>
+
+    <!-- Original Hero Image Banner -->
+    <div class="hero-image-container my-4 text-center">
+        <img src="{{ url_for('static', filename='images/banner1.png') }}" 
+             alt="Logistics Banner" 
+             class="hero-image"
+             style="width: 100%; max-width: 1200px; height: auto; border-radius: 10px; box-shadow: 0 4px 20px rgba(0, 255, 242, 0.25); border: 1px solid var(--accent-color);">
+    </div>
+
+    <!-- Quick CTA Action Buttons -->
+    <div class="d-flex justify-content-center gap-3 my-4 flex-wrap">
+        <a href="/route_optimizer" class="btn btn-primary btn-lg px-4">
+            <i class="fas fa-route me-2"></i>Launch Route Optimizer
+        </a>
+        <a href="/dashboard" class="btn btn-outline-info btn-lg px-4" style="border-color: var(--neon-blue);">
+            <i class="fas fa-chart-line me-2"></i>AI Command Dashboard
+        </a>
+        <a href="/developer" class="btn btn-outline-warning btn-lg px-4" style="border-color: var(--neon-orange);">
+            <i class="fas fa-user-tie me-2"></i>Developer & Recruiter
+        </a>
+    </div>
+
+    <!-- Feature Grid Section -->
+    <div class="feature-section">
+        <div class="feature-item">
+            <i class="fas fa-route fa-2x mb-3" style="color: var(--neon-blue)"></i>
+            <h3 class="feature-title">Route Optimization</h3>
+            <p class="small text-muted">Find optimal paths with Dijkstra graph algorithms & dynamic traffic weighting</p>
+            <a href="/route_optimizer" class="btn btn-primary btn-sm mt-2">Try Now</a>
+        </div>
+        <div class="feature-item">
+            <i class="fas fa-truck fa-2x mb-3" style="color: var(--neon-blue)"></i>
+            <h3 class="feature-title">Fleet Telemetry</h3>
+            <p class="small text-muted">Track vehicle health, fuel burn, and container status in real-time</p>
+            <a href="/dashboard" class="btn btn-primary btn-sm mt-2">View Fleet</a>
+        </div>
+        <div class="feature-item">
+            <i class="fas fa-chart-line fa-2x mb-3" style="color: var(--neon-blue)"></i>
+            <h3 class="feature-title">Real-time Analytics</h3>
+            <p class="small text-muted">Make data-driven decisions with 95.2% XGBoost model accuracy</p>
+            <a href="/analytics" class="btn btn-primary btn-sm mt-2">View Analytics</a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Interactive Map Preview Section -->
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card p-2 mb-4">
+            <div class="d-flex justify-content-between align-items-center px-2 py-1 mb-2">
+                <h4 class="card-title m-0" style="font-size: 1.1rem;"><i class="fa-solid fa-map-location-dot me-2"></i> Active Fleet Regional Node Map</h4>
+                <span class="badge bg-success"><i class="fa-solid fa-wifi me-1"></i> Live GIS Stream</span>
+            </div>
+            <div id="indexMap" style="height: 380px; border-radius: 8px;"></div>
+        </div>
+
+        <!-- AI Model Performance Overview -->
+        <div class="card mb-4">
+            <div class="card-body p-3">
+                <h3 class="card-title mb-3"><i class="fa-solid fa-brain me-2"></i> AI Model Performance & Feature Importances</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="feature-item text-center">
+                            <i class="fas fa-brain fa-2x mb-3" style="color: var(--neon-blue)"></i>
+                            <h4 class="feature-title">XGBoost Accuracy</h4>
+                            <p class="main-subtitle mb-0">95.2%</p>
+                            <small class="text-info">Decision Confidence: 98.4%</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="feature-item text-start">
+                            <h4 class="feature-title mb-2 text-center">Key Features Weight</h4>
+                            <div class="feature-list">
+                                <div class="feature-stat mb-2">
+                                    <div class="d-flex justify-content-between small text-light mb-1">
+                                        <span>Geodesic Distance</span>
+                                        <span>78.5%</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width: 78.5%"></div>
+                                    </div>
+                                </div>
+                                <div class="feature-stat mb-2">
+                                    <div class="d-flex justify-content-between small text-light mb-1">
+                                        <span>Traffic Congestion</span>
+                                        <span>7.9%</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-info" style="width: 7.9%"></div>
+                                    </div>
+                                </div>
+                                <div class="feature-stat">
+                                    <div class="d-flex justify-content-between small text-light mb-1">
+                                        <span>Weather Risk</span>
+                                        <span>4.3%</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-warning" style="width: 4.3%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- Quick Actions Card -->
+        <div class="card mb-4">
+            <div class="card-body p-3">
+                <h3 class="card-title mb-3">Quick Navigation</h3>
+                <div class="d-grid gap-2">
+                    <a href="/route_optimizer" class="btn btn-primary">
+                        <i class="fas fa-route me-2"></i>Find Optimal Route
+                    </a>
+                    <a href="/dashboard" class="btn btn-outline-info">
+                        <i class="fas fa-chart-bar me-2"></i>View Command Center
+                    </a>
+                    <a href="/analytics" class="btn btn-outline-success">
+                        <i class="fas fa-chart-pie me-2"></i>Fleet Analytics
+                    </a>
+                    <a href="/engineering_insights" class="btn btn-outline-warning">
+                        <i class="fas fa-microchip me-2"></i>Engineering Insights
+                    </a>
+                    <a href="/developer" class="btn btn-info text-dark font-weight-bold">
+                        <i class="fas fa-user-astronaut me-2"></i>Developer & Recruiter
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carbon Reduction Highlight -->
+        <div class="card text-center p-3">
+            <i class="fa-solid fa-leaf fa-3x text-success mb-2"></i>
+            <h4 class="text-white fw-bold m-0">14.2 Tons</h4>
+            <small class="text-success fw-bold">CO₂ Carbon Reduced Monthly</small>
+            <p class="small text-muted mt-2 mb-0">Powered by Explainable AI (XAI) Eco-Routing optimization.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let indexMap = L.map('indexMap').setView([17.3850, 78.4867], 11);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(indexMap);
+
+    const points = [
+        { name: "Central Logistics Hub", lat: 17.3850, lon: 78.4867 },
+        { name: "Secunderabad Depot", lat: 17.4399, lon: 78.4983 },
+        { name: "HiTech Logistics Hub", lat: 17.4435, lon: 78.3772 }
+    ];
+
+    points.forEach(p => {
+        L.marker([p.lat, p.lon]).addTo(indexMap).bindPopup(`<b>${p.name}</b>`);
+    });
+
+    const coords = points.map(p => [p.lat, p.lon]);
+    L.polyline(coords, { color: '#00fff2', weight: 4, opacity: 0.8, dashArray: '6, 6' }).addTo(indexMap);
+});
+</script>
+{% endblock %}

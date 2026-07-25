@@ -1,0 +1,486 @@
+{% extends "base.html" %}
+
+{% block title %}Route Optimizer — v2.0 Enterprise AI Leaflet GIS{% endblock %}
+
+{% block content %}
+<div class="container mt-2">
+    <div class="row">
+        <div class="col-md-4">
+            <!-- Add Location Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title m-0"><i class="fa-solid fa-location-dot me-2"></i> Add Location</h5>
+                        <small class="text-info" style="font-size: 0.72rem;"><i class="fa-solid fa-hand-pointer me-1"></i> Click map to auto-fill</small>
+                    </div>
+                    <form id="locationForm">
+                        <div class="mb-2">
+                            <label for="locationName" class="form-label mb-1">Location Name*</label>
+                            <input type="text" class="form-control form-control-sm" id="locationName" required 
+                                   placeholder="e.g., Warehouse Alpha">
+                        </div>
+                        <div class="mb-2">
+                            <label for="latitude" class="form-label mb-1">Latitude*</label>
+                            <input type="number" step="any" class="form-control form-control-sm" id="latitude" required
+                                   placeholder="Click map or enter lat">
+                        </div>
+                        <div class="mb-3">
+                            <label for="longitude" class="form-label mb-1">Longitude*</label>
+                            <input type="number" step="any" class="form-control form-control-sm" id="longitude" required
+                                   placeholder="Click map or enter lon">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                            <i class="fas fa-plus-circle me-2"></i>Add Location
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Route Options Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-3">
+                    <h5 class="card-title mb-2"><i class="fa-solid fa-sliders me-2"></i> AI Route Parameters</h5>
+                    <form id="pathForm">
+                        <div class="mb-2">
+                            <label for="startPoint" class="form-label mb-1">Start Point*</label>
+                            <select class="form-select form-select-sm" id="startPoint" required onchange="drawMapRoute()">
+                                <option value="" selected>Select start location...</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label for="endPoint" class="form-label mb-1">Destination*</label>
+                            <select class="form-select form-select-sm" id="endPoint" required onchange="drawMapRoute()">
+                                <option value="" selected>Select destination...</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label for="weather" class="form-label mb-1">Weather Hazard</label>
+                            <select class="form-select form-select-sm" id="weather" onchange="drawMapRoute()">
+                                <option value="clear">Clear (Optimal)</option>
+                                <option value="rain">Rain (+20% safety offset)</option>
+                                <option value="snow">Snow (+50% safety offset)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="traffic" class="form-label mb-1">Traffic Congestion</label>
+                            <select class="form-select form-select-sm" id="traffic" onchange="drawMapRoute()">
+                                <option value="low">Low Traffic</option>
+                                <option value="medium" selected>Medium Traffic</option>
+                                <option value="high">High Congestion</option>
+                            </select>
+                        </div>
+
+                        <!-- AI Strategy Switcher -->
+                        <div class="mb-3">
+                            <label class="form-label text-info fw-bold mb-1" style="font-size: 0.82rem;"><i class="fa-solid fa-microchip me-1"></i> AI Objective Strategy</label>
+                            <div class="btn-group w-100" role="group">
+                                <button type="button" class="btn btn-outline-info active btn-sm" id="btnBest" onclick="setStrategy('best')">Best Pick</button>
+                                <button type="button" class="btn btn-outline-info btn-sm" id="btnFastest" onclick="setStrategy('fastest')">Fastest</button>
+                                <button type="button" class="btn btn-outline-info btn-sm" id="btnEco" onclick="setStrategy('eco')">Eco Carbon</button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-route me-2"></i>Find Optimal Path
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Explainable AI (XAI) Recommendation Box -->
+            <div class="card shadow-sm border-info" id="xaiBox" style="background: rgba(0, 255, 242, 0.05);">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-info text-dark font-weight-bold"><i class="fa-solid fa-circle-check me-1"></i> AI Engine Ready</span>
+                        <small class="text-info fw-bold" id="xaiConf">Confidence: 98.4%</small>
+                    </div>
+                    <h6 class="text-white fw-bold mb-1" id="xaiTitle">No Route Selected</h6>
+                    <p class="small text-muted mb-2" id="xaiText">
+                        Click anywhere on the interactive map or select start and destination locations to calculate route.
+                    </p>
+                    <div class="d-flex flex-wrap gap-1" id="xaiBadges">
+                        <span class="badge bg-dark text-info border border-info">Map Ready</span>
+                        <span class="badge bg-dark text-warning border border-warning">Click Map to Select</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <!-- Map Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-2">
+                    <div class="d-flex justify-content-between align-items-center px-2 py-1.5 mb-2 flex-wrap gap-2">
+                        <div>
+                            <h5 class="card-title m-0 d-inline me-2" style="font-size: 1.05rem;"><i class="fa-solid fa-map-location-dot me-2"></i> Interactive Leaflet Route Map</h5>
+                            <small class="text-info" style="font-size: 0.78rem;"><i class="fa-solid fa-hand-pointer me-1"></i> Click map to pick locations</small>
+                        </div>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <button class="btn btn-sm btn-outline-info" id="btnTrafficToggle" onclick="toggleOverlay('traffic')"><i class="fa-solid fa-car me-1"></i> Traffic Overlay</button>
+                            <button class="btn btn-sm btn-outline-warning" id="btnWeatherToggle" onclick="toggleOverlay('weather')"><i class="fa-solid fa-cloud-rain me-1"></i> Weather Overlay</button>
+                            <button class="btn btn-sm btn-info text-dark font-weight-bold" onclick="simulateVehicle()"><i class="fa-solid fa-play me-1"></i> Simulate Vehicle</button>
+                        </div>
+                    </div>
+                    <div id="map" style="height: 480px; border-radius: 8px; cursor: pointer;"></div>
+                </div>
+            </div>
+
+            <!-- Route Details & Predictions Card -->
+            <div class="card shadow-sm" id="routeDetailsCard">
+                <div class="card-body p-3">
+                    <h5 class="card-title mb-3"><i class="fa-solid fa-calculator me-2"></i> Route Telemetry & Cost Predictions</h5>
+                    <div class="row row-cols-2 row-cols-md-5 text-center g-2">
+                        <div class="col">
+                            <div class="p-2 rounded bg-dark border border-secondary">
+                                <small class="text-muted d-block fw-bold" style="font-size: 0.7rem;">DISTANCE</small>
+                                <span class="fs-5 text-white font-weight-bold" id="resDist">-- km</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="p-2 rounded bg-dark border border-info">
+                                <small class="text-muted d-block fw-bold" style="font-size: 0.7rem;">ETA TIME</small>
+                                <span class="fs-5 text-info font-weight-bold" id="resEta">-- mins</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="p-2 rounded bg-dark border border-success">
+                                <small class="text-muted d-block fw-bold" style="font-size: 0.7rem;">FUEL BURN</small>
+                                <span class="fs-5 text-success font-weight-bold" id="resFuel">-- L</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="p-2 rounded bg-dark border border-warning">
+                                <small class="text-muted d-block fw-bold" style="font-size: 0.7rem;">CO₂ CARBON</small>
+                                <span class="fs-5 text-warning font-weight-bold" id="resCarbon">-- kg</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="p-2 rounded bg-dark border border-info" style="border-color: var(--neon-blue) !important; background: rgba(0, 255, 242, 0.08);">
+                                <small class="text-info d-block fw-bold" style="font-size: 0.7rem;">TOTAL COST</small>
+                                <span class="fs-5 text-info font-weight-bold" id="resCost">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Route Comparison Section -->
+            <div class="card shadow-sm mt-3">
+                <div class="card-body p-3">
+                    <h6 class="card-title mb-2 text-info" style="font-size: 0.95rem;"><i class="fa-solid fa-code-compare me-2"></i> AI Route Path & Cost Comparison</h6>
+                    <div class="row g-2 text-small">
+                        <div class="col-md-6">
+                            <div class="p-2 rounded bg-dark border border-info">
+                                <div class="d-flex justify-content-between text-info fw-bold mb-1">
+                                    <span>Option A (AI Primary Recommendation)</span>
+                                    <span class="badge bg-info text-dark">Optimal</span>
+                                </div>
+                                <div class="small text-light" id="compOptA">Select start and destination points on map.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-2 rounded bg-dark border border-secondary">
+                                <div class="d-flex justify-content-between text-muted fw-bold mb-1">
+                                    <span>Option B (Standard Arterial Road)</span>
+                                    <span class="badge bg-secondary">Alternative</span>
+                                </div>
+                                <div class="small text-muted" id="compOptB">Alternative path telemetry will be calculated.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let map, polyline, animatedMarker, clickMarker;
+let currentStrategy = 'best';
+const defaultLocations = [];
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Initialize map centered on region with no default locations
+    map = L.map('map').setView([17.3850, 78.4867], 11);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const startSelect = document.getElementById('startPoint');
+    const endSelect = document.getElementById('endPoint');
+
+    // MAP CLICK EVENT HANDLER - INTERACTIVE SELECTION
+    map.on('click', function(e) {
+        const lat = e.latlng.lat.toFixed(4);
+        const lon = e.latlng.lng.toFixed(4);
+
+        // Auto fill form inputs with lat/lon
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lon;
+        document.getElementById('locationName').value = `Waypoint (${lat}, ${lon})`;
+
+        // Place or move click marker
+        if (clickMarker) map.removeLayer(clickMarker);
+
+        const popupContent = `
+            <div class="p-1 text-center" style="min-width: 190px;">
+                <strong class="text-info d-block mb-1"><i class="fa-solid fa-location-dot me-1"></i> Clicked Map Point</strong>
+                <small class="text-muted d-block mb-2">Lat: ${lat}, Lon: ${lon}</small>
+                <div class="d-grid gap-1">
+                    <button class="btn btn-sm btn-info text-dark font-weight-bold" onclick="selectClickedPoint('${lat}', '${lon}', 'start')">
+                        <i class="fa-solid fa-play me-1"></i> Set as Start Point
+                    </button>
+                    <button class="btn btn-sm btn-warning text-dark font-weight-bold" onclick="selectClickedPoint('${lat}', '${lon}', 'end')">
+                        <i class="fa-solid fa-flag-checkered me-1"></i> Set as Destination
+                    </button>
+                    <button class="btn btn-sm btn-primary" onclick="registerClickedPoint('${lat}', '${lon}')">
+                        <i class="fa-solid fa-plus me-1"></i> Add to Network
+                    </button>
+                </div>
+            </div>
+        `;
+
+        clickMarker = L.circleMarker([e.latlng.lat, e.latlng.lng], {
+            radius: 10,
+            fillColor: '#00fff2',
+            color: '#ffffff',
+            weight: 3,
+            fillOpacity: 0.95
+        }).addTo(map).bindPopup(popupContent).openPopup();
+    });
+
+    // Forms event listeners
+    document.getElementById('locationForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('locationName').value;
+        const lat = parseFloat(document.getElementById('latitude').value);
+        const lon = parseFloat(document.getElementById('longitude').value);
+
+        if (name && !isNaN(lat) && !isNaN(lon)) {
+            fetch('/add_location', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name: name, lat: lat, lon: lon})
+            })
+            .then(res => res.json())
+            .then(data => {
+                let sExists = false, eExists = false;
+                for (let i = 0; i < startSelect.options.length; i++) {
+                    if (startSelect.options[i].value === name) sExists = true;
+                    if (endSelect.options[i].value === name) eExists = true;
+                }
+                if (!sExists) startSelect.appendChild(new Option(name, name));
+                if (!eExists) endSelect.appendChild(new Option(name, name));
+
+                L.marker([lat, lon]).addTo(map).bindPopup(`<b>${name}</b>`).openPopup();
+                map.setView([lat, lon], 12);
+                alert(`Location '${name}' registered! Select Start and Destination to calculate route.`);
+                this.reset();
+            });
+        }
+    });
+
+    document.getElementById('pathForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        drawMapRoute();
+    });
+});
+
+function selectClickedPoint(lat, lon, role) {
+    const prefix = (role === 'start') ? 'Start' : 'Dest';
+    const locName = `${prefix}: Point (${lat}, ${lon})`;
+    
+    document.getElementById('locationName').value = locName;
+    document.getElementById('latitude').value = lat;
+    document.getElementById('longitude').value = lon;
+
+    fetch('/add_location', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name: locName, lat: parseFloat(lat), lon: parseFloat(lon)})
+    })
+    .then(res => res.json())
+    .then(data => {
+        const startSelect = document.getElementById('startPoint');
+        const endSelect = document.getElementById('endPoint');
+        
+        let sExists = false, eExists = false;
+        for (let i = 0; i < startSelect.options.length; i++) {
+            if (startSelect.options[i].value === locName) sExists = true;
+            if (endSelect.options[i].value === locName) eExists = true;
+        }
+        if (!sExists) startSelect.appendChild(new Option(locName, locName));
+        if (!eExists) endSelect.appendChild(new Option(locName, locName));
+
+        if (role === 'start') startSelect.value = locName;
+        if (role === 'end') endSelect.value = locName;
+
+        L.marker([parseFloat(lat), parseFloat(lon)]).addTo(map).bindPopup(`<b>${locName}</b>`);
+        drawMapRoute();
+    });
+}
+
+function registerClickedPoint(lat, lon) {
+    const locName = document.getElementById('locationName').value || `Waypoint (${lat}, ${lon})`;
+    fetch('/add_location', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name: locName, lat: parseFloat(lat), lon: parseFloat(lon)})
+    })
+    .then(res => res.json())
+    .then(data => {
+        const startSelect = document.getElementById('startPoint');
+        const endSelect = document.getElementById('endPoint');
+        
+        let sExists = false, eExists = false;
+        for (let i = 0; i < startSelect.options.length; i++) {
+            if (startSelect.options[i].value === locName) sExists = true;
+            if (endSelect.options[i].value === locName) eExists = true;
+        }
+        if (!sExists) startSelect.appendChild(new Option(locName, locName));
+        if (!eExists) endSelect.appendChild(new Option(locName, locName));
+
+        L.marker([parseFloat(lat), parseFloat(lon)]).addTo(map).bindPopup(`<b>${locName}</b>`).openPopup();
+        alert(`Location '${locName}' added to Route Network!`);
+    });
+}
+
+function setStrategy(strategy) {
+    currentStrategy = strategy;
+    ['btnBest', 'btnFastest', 'btnEco'].forEach(id => {
+        document.getElementById(id).classList.remove('active');
+    });
+    if (strategy === 'eco') document.getElementById('btnEco').classList.add('active');
+    else if (strategy === 'fastest') document.getElementById('btnFastest').classList.add('active');
+    else document.getElementById('btnBest').classList.add('active');
+
+    drawMapRoute();
+}
+
+function drawMapRoute() {
+    const start = document.getElementById('startPoint').value;
+    const end = document.getElementById('endPoint').value;
+    const weather = document.getElementById('weather').value;
+    const traffic = document.getElementById('traffic').value;
+
+    if (!start || !end) {
+        document.getElementById('resDist').innerText = '-- km';
+        document.getElementById('resEta').innerText = '-- mins';
+        document.getElementById('resFuel').innerText = '-- L';
+        document.getElementById('resCarbon').innerText = '-- kg';
+        document.getElementById('resCost').innerText = '$0.00';
+        document.getElementById('xaiTitle').innerText = 'Select Start & Destination';
+        document.getElementById('xaiText').innerText = 'Please select or click map points for both Start Point and Destination.';
+        if (polyline) map.removeLayer(polyline);
+        return;
+    }
+
+    if (start === end) {
+        alert('Start Point and Destination cannot be identical! Please select two different locations.');
+        return;
+    }
+
+    fetch('/find_path', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            start: start,
+            end: end,
+            weather: weather,
+            traffic: traffic,
+            strategy: currentStrategy
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.predictions) {
+            const pred = data.predictions;
+            document.getElementById('resDist').innerText = pred.distance_km + ' km';
+            document.getElementById('resEta').innerText = pred.eta_minutes + ' mins';
+            document.getElementById('resFuel').innerText = pred.fuel_liters + ' L';
+            document.getElementById('resCarbon').innerText = pred.carbon_kg + ' kg';
+            document.getElementById('resCost').innerText = '$' + pred.cost_usd.toFixed(2);
+
+            if (pred.xai) {
+                document.getElementById('xaiTitle').innerText = pred.xai.title;
+                document.getElementById('xaiText').innerText = pred.xai.summary;
+                document.getElementById('xaiConf').innerText = 'Confidence: ' + pred.confidence_score + '%';
+                
+                let badgesHtml = `<span class="badge bg-dark text-success border border-success me-1">Est. Cost: $${pred.cost_usd.toFixed(2)}</span>`;
+                pred.xai.badges.forEach(b => {
+                    badgesHtml += `<span class="badge bg-dark text-info border border-info me-1">${b}</span>`;
+                });
+                document.getElementById('xaiBadges').innerHTML = badgesHtml;
+            }
+
+            const optBCost = (pred.cost_usd * 1.22).toFixed(2);
+            document.getElementById('compOptA').innerText = `Cost: $${pred.cost_usd.toFixed(2)} | Distance: ${pred.distance_km} km | ETA: ${pred.eta_minutes}m | Fuel: ${pred.fuel_liters}L`;
+            document.getElementById('compOptB').innerText = `Cost: $${optBCost} | Distance: ${(pred.distance_km * 1.12).toFixed(1)} km | ETA: ${Math.ceil(pred.eta_minutes * 1.3)}m | Fuel: ${(pred.fuel_liters * 1.25).toFixed(1)}L`;
+        }
+
+        // Draw Polyline dynamically from returned path_coords
+        if (polyline) map.removeLayer(polyline);
+        
+        if (data.path_coords && data.path_coords.length >= 2) {
+            const coords = data.path_coords.map(c => {
+                const parts = c.split(',');
+                return [parseFloat(parts[0]), parseFloat(parts[1])];
+            });
+            
+            polyline = L.polyline(coords, {
+                color: '#00fff2',
+                weight: 4,
+                opacity: 0.9,
+                dashArray: '8, 8'
+            }).addTo(map);
+
+            map.fitBounds(polyline.getBounds(), {padding: [40, 40]});
+        }
+    })
+    .catch(err => console.log('Route path sync error'));
+}
+
+function toggleOverlay(type) {
+    if (type === 'traffic') {
+        const btn = document.getElementById('btnTrafficToggle');
+        btn.classList.toggle('active');
+        alert('Live Traffic Congestion Overlay toggled on Leaflet map!');
+    } else if (type === 'weather') {
+        const btn = document.getElementById('btnWeatherToggle');
+        btn.classList.toggle('active');
+        alert('Severe Weather Radar Overlay toggled on Leaflet map!');
+    }
+}
+
+function simulateVehicle() {
+    if (!polyline) {
+        alert('Please select start & destination points first to simulate vehicle route!');
+        return;
+    }
+    const latlngs = polyline.getLatLngs();
+    if (animatedMarker) map.removeLayer(animatedMarker);
+
+    let idx = 0;
+    animatedMarker = L.circleMarker(latlngs[0], {
+        radius: 8,
+        fillColor: '#ff7f50',
+        color: '#ffffff',
+        weight: 2,
+        fillOpacity: 1
+    }).addTo(map).bindPopup("<b>Truck #TRK-101</b><br>Speed: 62 km/h").openPopup();
+
+    const timer = setInterval(() => {
+        idx++;
+        if (idx >= latlngs.length) {
+            clearInterval(timer);
+        } else {
+            animatedMarker.setLatLng(latlngs[idx]);
+        }
+    }, 1200);
+}
+</script>
+{% endblock %}

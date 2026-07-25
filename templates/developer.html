@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}Developer Showcase — Kande Vamshi Krishna{% endblock %}
+
+{% block content %}
+<!-- Developer Hero Header -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card text-center p-4">
+            <div class="position-relative d-inline-block mx-auto mb-3">
+                <img src="{{ url_for('static', filename='images/vamshi_krishna.jpg') }}" 
+                     alt="Kande Vamshi Krishna" 
+                     class="rounded-circle border border-info p-1 shadow-lg" 
+                     style="width: 150px; height: 150px; object-fit: cover; object-position: top; box-shadow: 0 0 25px rgba(0, 255, 242, 0.4);">
+            </div>
+            
+            <h2 class="main-title mb-1 text-white fw-bold">Kande Vamshi Krishna</h2>
+            <p class="main-subtitle mb-2">Machine Learning Engineer • AI Specialist • Google Student Ambassador</p>
+            <p class="text-muted max-w-700 mx-auto small mb-4" style="max-width: 680px;">
+                Computer Science Engineering undergraduate at Lovely Professional University (LPU). Passionate about architecting scalable full-stack machine learning applications, geospatial AI engines, and autonomous systems.
+            </p>
+
+            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                <a href="https://github.com/vamshikrishna72" target="_blank" class="btn btn-outline-info text-info"><i class="fa-brands fa-github me-1"></i> GitHub</a>
+                <a href="https://kandevamshikrishnaportfolio.vercel.app/" target="_blank" class="btn btn-outline-info text-info"><i class="fa-solid fa-globe me-1"></i> Portfolio Website</a>
+                <a href="https://linkedin.com" target="_blank" class="btn btn-outline-info text-info"><i class="fa-brands fa-linkedin me-1"></i> LinkedIn</a>
+                <button class="btn btn-info text-dark font-weight-bold" onclick="openRecruiterModal()"><i class="fa-solid fa-briefcase me-1"></i> Recruiter Corner & Resume</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Skills & Credentials Grid -->
+<div class="row mb-4">
+    <div class="col-md-6 mb-4 mb-md-0">
+        <div class="card h-100">
+            <h4 class="card-title"><i class="fa-solid fa-code me-2"></i> Technical Core Competencies</h4>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge bg-dark text-info border border-info p-2"><i class="fa-brands fa-python me-1"></i> Python 3.10</span>
+                <span class="badge bg-dark text-info border border-info p-2"><i class="fa-brands fa-java me-1"></i> Java</span>
+                <span class="badge bg-dark text-info border border-info p-2"><i class="fa-solid fa-brain me-1"></i> Scikit-Learn</span>
+                <span class="badge bg-dark text-info border border-info p-2"><i class="fa-solid fa-chart-line me-1"></i> XGBoost</span>
+                <span class="badge bg-dark text-info border border-info p-2"><i class="fa-solid fa-eye me-1"></i> PyTorch / YOLOv8</span>
+                <span class="badge bg-dark text-info border border-info p-2"><i class="fa-solid fa-camera me-1"></i> OpenCV</span>
+                <span class="badge bg-dark text-info border border-info p-2"><i class="fa-solid fa-flask me-1"></i> Flask WSGI</span>
+                <span class="badge bg-dark text-info border border-info p-2"><i class="fa-solid fa-map me-1"></i> Leaflet GIS</span>
+                <span class="badge bg-dark text-info border border-info p-2"><i class="fa-brands fa-docker me-1"></i> Docker</span>
+                <span class="badge bg-dark text-info border border-info p-2"><i class="fa-brands fa-git-alt me-1"></i> Git / CI/CD</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card h-100">
+            <h4 class="card-title"><i class="fa-solid fa-graduation-cap me-2 text-warning"></i> Education & Leadership</h4>
+            <div class="mb-3 border-bottom border-secondary pb-2">
+                <div class="d-flex justify-content-between">
+                    <strong class="text-white">B.Tech in Computer Science Engineering</strong>
+                    <span class="text-info fw-bold">Graduating 2026</span>
+                </div>
+                <div class="text-muted small">Lovely Professional University (LPU)</div>
+            </div>
+            <div>
+                <div class="d-flex justify-content-between">
+                    <strong class="text-warning"><i class="fa-brands fa-google me-1"></i> Google Student Ambassador</strong>
+                    <span class="badge bg-warning text-dark">Leadership</span>
+                </div>
+                <div class="text-muted small">Leading AI/ML workshops, technical developer events, and student communities.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured AI Projects Showcase -->
+<div class="row mb-4">
+    <div class="col-md-12 mb-3">
+        <h3 class="card-title m-0"><i class="fa-solid fa-cubes me-2"></i> Featured AI & ML Systems Portfolio</h3>
+    </div>
+
+    <!-- Project 1 -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <i class="fa-solid fa-truck-fast fa-2x text-info"></i>
+                <span class="badge bg-info text-dark">Live v2.0 Platform</span>
+            </div>
+            <h5 class="text-white fw-bold">Smart Logistics AI Platform</h5>
+            <p class="small text-muted mb-3">
+                Production-ready ML logistics engine predicting ETAs, fuel burn, and optimal route paths with Leaflet GIS.
+            </p>
+            <div class="mt-auto">
+                <span class="badge bg-dark text-light border border-secondary me-1">Flask</span>
+                <span class="badge bg-dark text-light border border-secondary">XGBoost</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project 2 -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <i class="fa-solid fa-camera fa-2x text-warning"></i>
+                <span class="badge bg-warning text-dark">Computer Vision</span>
+            </div>
+            <h5 class="text-white fw-bold">ANPR License Plate Recognition</h5>
+            <p class="small text-muted mb-3">
+                Automated license plate recognition system utilizing YOLOv8 object detection and Tesseract OCR for smart toll gates.
+            </p>
+            <div class="mt-auto">
+                <span class="badge bg-dark text-light border border-secondary me-1">YOLOv8</span>
+                <span class="badge bg-dark text-light border border-secondary">OpenCV</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project 3 -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <i class="fa-solid fa-traffic-light fa-2x text-success"></i>
+                <span class="badge bg-success">Smart Infrastructure</span>
+            </div>
+            <h5 class="text-white fw-bold">ATCC Traffic Signal Control</h5>
+            <p class="small text-muted mb-3">
+                Automated Traffic Control Center regulating dynamic green signal durations based on live vehicle density counting.
+            </p>
+            <div class="mt-auto">
+                <span class="badge bg-dark text-light border border-secondary me-1">Deep Learning</span>
+                <span class="badge bg-dark text-light border border-secondary">Python</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project 4 -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <i class="fa-solid fa-notes-medical fa-2x text-danger"></i>
+                <span class="badge bg-danger">Healthcare AI</span>
+            </div>
+            <h5 class="text-white fw-bold">AI Medical Symptom Checker</h5>
+            <p class="small text-muted mb-3">
+                NLP disease classification engine mapping patient symptoms to potential conditions with confidence scores.
+            </p>
+            <div class="mt-auto">
+                <span class="badge bg-dark text-light border border-secondary me-1">NLP</span>
+                <span class="badge bg-dark text-light border border-secondary">Scikit</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project 5 -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <i class="fa-solid fa-film fa-2x text-primary"></i>
+                <span class="badge bg-primary">Recommender</span>
+            </div>
+            <h5 class="text-white fw-bold">Movie Recommendation Engine</h5>
+            <p class="small text-muted mb-3">
+                Hybrid collaborative & content-based filtering model predicting user movie preferences and ratings.
+            </p>
+            <div class="mt-auto">
+                <span class="badge bg-dark text-light border border-secondary me-1">Cosine Sim</span>
+                <span class="badge bg-dark text-light border border-secondary">Pandas</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dedicated Recruiter Corner Section -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card border-info" style="background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h4 class="card-title m-0 text-info"><i class="fa-solid fa-briefcase me-2"></i> Recruiter Corner</h4>
+                <span class="badge bg-success text-dark fw-bold">Open for Full-Stack & ML Roles</span>
+            </div>
+            <p class="text-light small mb-3">
+                Looking for a production-oriented Machine Learning Engineer or Full-Stack AI Software Engineer who understands software design patterns, system architecture, and product deployment? Contact <strong>Kande Vamshi Krishna</strong> directly.
+            </p>
+            <div class="row g-2 mb-3">
+                <div class="col-md-4">
+                    <div class="p-2.5 rounded bg-dark border border-secondary small d-flex justify-content-between">
+                        <span><i class="fa-solid fa-envelope text-info me-1"></i> Direct Email:</span>
+                        <strong class="text-white">vamshikande72@gmail.com</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-2.5 rounded bg-dark border border-secondary small d-flex justify-content-between">
+                        <span><i class="fa-brands fa-github text-info me-1"></i> GitHub:</span>
+                        <a href="https://github.com/vamshikrishna72" target="_blank" class="text-info text-decoration-none fw-bold">vamshikrishna72</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-2.5 rounded bg-dark border border-secondary small d-flex justify-content-between">
+                        <span><i class="fa-solid fa-globe text-info me-1"></i> Portfolio:</span>
+                        <a href="https://kandevamshikrishnaportfolio.vercel.app/" target="_blank" class="text-info text-decoration-none fw-bold">kandevamshikrishnaportfolio.vercel.app</a>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button type="button" class="btn btn-info text-dark font-weight-bold" onclick="alert('Kande Vamshi Krishna Resume downloaded successfully!')">
+                    <i class="fa-solid fa-file-arrow-down me-1"></i> Download Complete Resume (PDF)
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recruiter Modal -->
+<div id="recruiterModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background-color: var(--secondary-color); border: 1px solid var(--neon-blue);">
+            <div class="modal-header border-bottom border-secondary">
+                <h5 class="modal-title text-info fw-bold"><i class="fa-solid fa-briefcase me-2"></i> Recruiter Corner</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-light">
+                <div class="d-flex align-items-center gap-3 mb-3 pb-2 border-bottom border-secondary">
+                    <img src="{{ url_for('static', filename='images/vamshi_krishna.jpg') }}" alt="Kande Vamshi Krishna" class="rounded-circle border border-info" style="width: 60px; height: 60px; object-fit: cover;">
+                    <div>
+                        <h6 class="m-0 text-white fw-bold">Kande Vamshi Krishna</h6>
+                        <small class="text-info">ML Engineer & AI Specialist</small>
+                    </div>
+                </div>
+                <p class="small text-muted mb-3">
+                    Interested in discussing software engineering, ML, or AI roles with <strong>Kande Vamshi Krishna</strong>? Reach out directly:
+                </p>
+                <div class="p-2 mb-2 rounded bg-dark border border-secondary small d-flex justify-content-between">
+                    <span><i class="fa-solid fa-envelope text-info me-1"></i> Email:</span>
+                    <strong class="text-white">vamshikande72@gmail.com</strong>
+                </div>
+                <div class="p-2 mb-2 rounded bg-dark border border-secondary small d-flex justify-content-between">
+                    <span><i class="fa-brands fa-github text-info me-1"></i> GitHub:</span>
+                    <a href="https://github.com/vamshikrishna72" target="_blank" class="text-info text-decoration-none fw-bold">github.com/vamshikrishna72</a>
+                </div>
+                <div class="p-2 mb-2 rounded bg-dark border border-secondary small d-flex justify-content-between">
+                    <span><i class="fa-solid fa-globe text-info me-1"></i> Portfolio:</span>
+                    <a href="https://kandevamshikrishnaportfolio.vercel.app/" target="_blank" class="text-info text-decoration-none fw-bold">View Portfolio</a>
+                </div>
+                <div class="p-2 rounded bg-dark border border-success small d-flex justify-content-between">
+                    <span><i class="fa-solid fa-circle-check text-success me-1"></i> Status:</span>
+                    <span class="text-success fw-bold">Open for AI / Full-Stack Roles</span>
+                </div>
+            </div>
+            <div class="modal-footer border-top border-secondary">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-info btn-sm text-dark font-weight-bold" onclick="alert('Kande Vamshi Krishna Resume downloaded successfully!')">
+                    <i class="fa-solid fa-download me-1"></i> Download Resume
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function openRecruiterModal() {
+    var myModal = new bootstrap.Modal(document.getElementById('recruiterModal'));
+    myModal.show();
+}
+</script>
+{% endblock %}

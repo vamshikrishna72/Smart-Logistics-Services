@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistics Shortest Path Finder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 1200px;
+            margin-top: 30px;
+        }
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background-color: #4361ee;
+            border-color: #4361ee;
+        }
+        .btn-success {
+            background-color: #3f37c9;
+            border-color: #3f37c9;
+        }
+        .form-control {
+            border-radius: 6px;
+        }
+        .result-box {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Logistics Shortest Path Finder</h1>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <!-- Add Location Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Add Location</h5>
+                        <form id="locationForm">
+                            <div class="mb-3">
+                                <label for="locationName" class="form-label">Location Name</label>
+                                <input type="text" class="form-control" id="locationName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="latitude" class="form-label">Latitude</label>
+                                <input type="number" step="any" class="form-control" id="latitude" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="longitude" class="form-label">Longitude</label>
+                                <input type="number" step="any" class="form-control" id="longitude" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Location</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Find Path Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Find Shortest Path</h5>
+                        <form id="pathForm">
+                            <div class="mb-3">
+                                <label for="startPoint" class="form-label">Start Point</label>
+                                <select class="form-control" id="startPoint" required>
+                                    <option value="">Select start point...</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="endPoint" class="form-label">End Point</label>
+                                <select class="form-control" id="endPoint" required>
+                                    <option value="">Select end point...</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success">Find Path</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <!-- Map and Results -->
+                <div id="map"></div>
+                <div id="results" class="result-box d-none">
+                    <h5>Results:</h5>
+                    <p id="pathResult"></p>
+                    <p id="distanceResult"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Initialize map
+        let map = null;
+
+        // Handle adding a new location
+        $('#locationForm').submit(function(e) {
+            e.preventDefault();
+            
+            const data = {
+                name: $('#locationName').val(),
+                lat: parseFloat($('#latitude').val()),
+                lon: parseFloat($('#longitude').val())
+            };
+            
+            $.ajax({
+                url: '/add_location',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    // Update location dropdowns
+                    updateLocationDropdowns(response.locations);
+                    
+                    // Clear form
+                    $('#locationForm')[0].reset();
+                    
+                    alert('Location added successfully!');
+                },
+                error: function(xhr) {
+                    alert('Error adding location: ' + xhr.responseJSON.error);
+                }
+            });
+        });
+
+        // Handle finding path
+        $('#pathForm').submit(function(e) {
+            e.preventDefault();
+            
+            const data = {
+                start: $('#startPoint').val(),
+                end: $('#endPoint').val()
+            };
+            
+            $.ajax({
+                url: '/find_path',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    // Update map
+                    $('#map').html(response.map_html);
+                    
+                    // Show results
+                    $('#results').removeClass('d-none');
+                    $('#pathResult').text('Path: ' + response.path.join(' → '));
+                    $('#distanceResult').text('Distance: ' + response.distance.toFixed(2) + ' km');
+                },
+                error: function(xhr) {
+                    alert('Error finding path: ' + xhr.responseJSON.error);
+                }
+            });
+        });
+
+        // Update location dropdowns
+        function updateLocationDropdowns(locations) {
+            const dropdowns = ['#startPoint', '#endPoint'];
+            
+            dropdowns.forEach(dropdown => {
+                const select = $(dropdown);
+                const currentVal = select.val();
+                
+                // Clear existing options except the first one
+                select.find('option:not(:first)').remove();
+                
+                // Add new options
+                locations.forEach(location => {
+                    select.append($('<option>', {
+                        value: location,
+                        text: location
+                    }));
+                });
+                
+                // Restore previous selection if it still exists
+                if (locations.includes(currentVal)) {
+                    select.val(currentVal);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

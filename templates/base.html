@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Logistics Route Optimizer — V2.0 Enterprise AI{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    {% block styles %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+                <span>🚚 Smart Logistics Optimizer</span>
+                <span class="badge bg-info text-dark" style="font-size: 0.68rem; font-weight: 700;">v2.0 Enterprise AI</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'home' %}active{% endif %}" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}" href="/dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'route_optimizer_page' %}active{% endif %}" href="/route_optimizer">Route Optimizer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'analytics_page' %}active{% endif %}" href="/analytics">Analytics</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'settings_page' %}active{% endif %}" href="/settings">Settings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'engineering_insights_page' %}active{% endif %}" href="/engineering_insights" style="color: var(--neon-orange) !important;">Insights</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-info text-info ms-2 px-3 py-1" href="/developer" style="border-color: var(--neon-blue); border-radius: 6px;">Developer</a>
+                    </li>
+                    
+                    <!-- Notification Bell Center -->
+                    <li class="nav-item ms-3 position-relative">
+                        <button class="btn btn-dark text-info p-2 border-0 bg-transparent" id="notifDropdown" onclick="toggleNotifs()" title="Notification Center">
+                            <i class="fa-solid fa-bell fs-5"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notifBadge" style="font-size: 0.65rem;">4</span>
+                        </button>
+                        <div id="notifBox" class="card position-absolute end-0 mt-2 p-3 shadow-lg" style="width: 340px; z-index: 1050; display: none; background-color: var(--secondary-color); border: 1px solid var(--neon-blue); border-radius: 10px;">
+                            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-secondary">
+                                <h6 class="m-0 text-info font-weight-bold"><i class="fa-solid fa-bell me-1"></i> Live Notification Center</h6>
+                                <button class="btn btn-link btn-sm text-muted p-0 text-decoration-none" onclick="clearNotifs()" style="font-size: 0.75rem;">Mark all read</button>
+                            </div>
+                            <div class="small" id="notifList">
+                                <div class="p-2 mb-2 rounded" style="background: rgba(0, 255, 242, 0.08); border-left: 3px solid var(--neon-blue);">
+                                    <strong class="text-info"><i class="fa-solid fa-route me-1"></i> Dynamic Reroute</strong><br>
+                                    <span class="text-light">Truck #TRK-108 rerouted around I-95 congestion (-24 mins).</span>
+                                </div>
+                                <div class="p-2 mb-2 rounded" style="background: rgba(255, 127, 80, 0.08); border-left: 3px solid var(--neon-orange);">
+                                    <strong class="text-warning"><i class="fa-solid fa-cloud-bolt me-1"></i> Weather Alert</strong><br>
+                                    <span class="text-light">Heavy rain detected along Coast Corridor. ETAs updated.</span>
+                                </div>
+                                <div class="p-2 mb-2 rounded" style="background: rgba(76, 201, 240, 0.08); border-left: 3px solid var(--success-color);">
+                                    <strong class="text-success"><i class="fa-solid fa-leaf me-1"></i> Eco Target Met</strong><br>
+                                    <span class="text-light">14.2 Tons of CO₂ reduced this month!</span>
+                                </div>
+                                <div class="p-2 rounded" style="background: rgba(255, 193, 7, 0.08); border-left: 3px solid #ffc107;">
+                                    <strong class="text-warning"><i class="fa-solid fa-wrench me-1"></i> Predictive Maintenance</strong><br>
+                                    <span class="text-light">Truck #TRK-108 brake wear 78%. Service scheduled.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Floating AI Copilot Widget (LogiBot) -->
+    <div id="copilotFab" onclick="toggleCopilot()" title="Ask LogiBot AI Copilot" style="position: fixed; bottom: 24px; right: 24px; z-index: 2000; width: 56px; height: 56px; border-radius: 50%; background: var(--secondary-color); border: 2px solid var(--neon-blue); color: var(--neon-blue); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; box-shadow: 0 0 20px rgba(0, 255, 242, 0.4); transition: all 0.3s ease;">
+        <i class="fa-solid fa-robot"></i>
+    </div>
+
+    <div id="copilotWindow" class="card position-fixed bottom-0 end-0 m-4 shadow-lg" style="width: 370px; height: 520px; z-index: 2000; display: none; flex-direction: column; background-color: var(--secondary-color); border: 1px solid var(--neon-blue); border-radius: 12px; overflow: hidden;">
+        <div class="card-header d-flex justify-content-between align-items-center py-2 px-3" style="background-color: var(--accent-color); border-bottom: 1px solid var(--neon-blue);">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-brain text-info fs-5"></i>
+                <div>
+                    <h6 class="m-0 text-white fw-bold" style="font-size: 0.95rem;">LogiBot AI Copilot</h6>
+                    <small class="text-info" style="font-size: 0.7rem;">Active • XGBoost & XAI Engine</small>
+                </div>
+            </div>
+            <button onclick="toggleCopilot()" class="btn-close btn-close-white btn-sm"></button>
+        </div>
+
+        <div class="card-body p-3 overflow-auto d-flex flex-column gap-2" id="copilotBody" style="flex: 1; font-size: 0.88rem;">
+            <div class="p-2.5 rounded align-self-start" style="background-color: var(--accent-color); color: var(--text-color); max-width: 88%; border: 1px solid rgba(0, 255, 242, 0.25);">
+                👋 Hello! I am <strong>LogiBot Copilot</strong>. Ask me about route optimization, fuel savings, machine learning models, architecture, or developer details for <strong>Kande Vamshi Krishna</strong>!
+            </div>
+        </div>
+
+        <div class="p-2 border-top border-secondary d-flex gap-1 overflow-auto" style="background: rgba(0,0,0,0.25);">
+            <button class="btn btn-sm btn-outline-info text-nowrap" style="font-size: 0.72rem;" onclick="askQuick('Who built this?')">Who built this?</button>
+            <button class="btn btn-sm btn-outline-info text-nowrap" style="font-size: 0.72rem;" onclick="askQuick('ML Stack')">ML Stack</button>
+            <button class="btn btn-sm btn-outline-info text-nowrap" style="font-size: 0.72rem;" onclick="askQuick('Resume & Contact')">Resume</button>
+            <button class="btn btn-sm btn-outline-info text-nowrap" style="font-size: 0.72rem;" onclick="askQuick('Fuel Savings')">Fuel Savings</button>
+        </div>
+
+        <div class="card-footer p-2 d-flex gap-2" style="background-color: var(--secondary-color); border-top: 1px solid var(--accent-color);">
+            <input type="text" id="copilotInput" class="form-control form-control-sm" placeholder="Ask LogiBot a question..." onkeypress="handleCopilotKey(event)">
+            <button onclick="sendCopilotMsg()" class="btn btn-sm btn-info text-dark font-weight-bold px-3"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5 py-4 border-top border-secondary text-center text-muted small">
+        <div class="container">
+            <p class="m-0">© 2026 Smart Logistics Optimizer v2.0 — Engineered by <a href="/developer" class="text-info text-decoration-none fw-bold">Kande Vamshi Krishna</a> | <a href="https://kandevamshikrishnaportfolio.vercel.app/" target="_blank" class="text-warning text-decoration-none">Portfolio Website</a></p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+        function toggleNotifs() {
+            const box = document.getElementById('notifBox');
+            box.style.display = box.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function clearNotifs() {
+            const badge = document.getElementById('notifBadge');
+            if (badge) badge.style.display = 'none';
+        }
+
+        function toggleCopilot() {
+            const win = document.getElementById('copilotWindow');
+            win.style.display = win.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        function askQuick(txt) {
+            document.getElementById('copilotInput').value = txt;
+            sendCopilotMsg();
+        }
+
+        function handleCopilotKey(e) {
+            if (e.key === 'Enter') sendCopilotMsg();
+        }
+
+        function sendCopilotMsg() {
+            const input = document.getElementById('copilotInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const body = document.getElementById('copilotBody');
+            body.innerHTML += `<div class="p-2 rounded align-self-end text-dark font-weight-bold" style="background-color: var(--neon-blue); max-width: 85%;">${msg}</div>`;
+            input.value = '';
+            body.scrollTop = body.scrollHeight;
+
+            fetch('/api/assistant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: msg })
+            })
+            .then(res => res.json())
+            .then(data => {
+                body.innerHTML += `<div class="p-2 rounded align-self-start" style="background-color: var(--accent-color); color: var(--text-color); max-width: 85%; border: 1px solid rgba(0, 255, 242, 0.25);">${data.reply}</div>`;
+                body.scrollTop = body.scrollHeight;
+            })
+            .catch(() => {
+                body.innerHTML += `<div class="p-2 rounded align-self-start" style="background-color: var(--accent-color); color: var(--text-color); max-width: 85%;">LogiBot v2.0 is active. Explore the <a href="/developer" class="text-info">Developer Page</a> or <a href="/engineering_insights" class="text-warning">Engineering Insights</a>!</div>`;
+                body.scrollTop = body.scrollHeight;
+            });
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

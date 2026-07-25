@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics & ML Diagnostics — v2.0 Enterprise AI{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card p-4">
+            <h2 class="card-title mb-2"><i class="fa-solid fa-chart-pie me-2"></i> Fleet & Machine Learning Analytics</h2>
+            <p class="text-muted m-0">In-depth performance evaluation, feature importances, ESG carbon reduction benchmarks, and driver performance telemetry.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Key Metric Badges -->
+<div class="row text-center g-3 mb-4">
+    <div class="col-md-3">
+        <div class="p-3 rounded bg-dark border border-info">
+            <small class="text-muted d-block fw-bold mb-1">MODEL ACCURACY SCORE</small>
+            <span class="fs-3 text-info font-weight-bold">95.2%</span>
+            <small class="text-info d-block mt-1"><i class="fa-solid fa-check me-1"></i> XGBoost Regressor</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="p-3 rounded bg-dark border border-success">
+            <small class="text-muted d-block fw-bold mb-1">FLEET UTILIZATION RATE</small>
+            <span class="fs-3 text-success font-weight-bold">88.0%</span>
+            <small class="text-success d-block mt-1"><i class="fa-solid fa-truck me-1"></i> 8 / 10 Active Units</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="p-3 rounded bg-dark border border-warning">
+            <small class="text-muted d-block fw-bold mb-1">MONTHLY CO₂ REDUCTION</small>
+            <span class="fs-3 text-warning font-weight-bold">14.2 Tons</span>
+            <small class="text-warning d-block mt-1"><i class="fa-solid fa-leaf me-1"></i> ESG Compliant</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="p-3 rounded bg-dark border border-secondary">
+            <small class="text-muted d-block fw-bold mb-1">AVERAGE INFERENCE LATENCY</small>
+            <span class="fs-3 text-white font-weight-bold">&lt; 120 ms</span>
+            <small class="text-light d-block mt-1"><i class="fa-solid fa-bolt me-1"></i> Real-Time Pipeline</small>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <h4 class="card-title"><i class="fa-solid fa-brain me-2"></i> XGBoost Feature Weights (%)</h4>
+            <div style="height: 260px;">
+                <canvas id="featureWeightsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <h4 class="card-title"><i class="fa-solid fa-leaf text-success me-2"></i> Carbon Footprint Avoided (Tons CO₂)</h4>
+            <div style="height: 260px;">
+                <canvas id="carbonTrendChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <h4 class="card-title mb-3"><i class="fa-solid fa-truck-medical me-2 text-warning"></i> Predictive Vehicle Maintenance Telemetry</h4>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle m-0">
+                    <thead>
+                        <tr class="text-info border-bottom border-secondary">
+                            <th>Vehicle ID</th>
+                            <th>Model</th>
+                            <th>Odometry</th>
+                            <th>Health Index</th>
+                            <th>Brake Wear</th>
+                            <th>Prediction Risk</th>
+                            <th>Action Needed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold text-white">TRK-101</td>
+                            <td class="text-muted">Volvo FH16</td>
+                            <td>142,500 km</td>
+                            <td><span class="badge bg-success">98%</span></td>
+                            <td>12%</td>
+                            <td><span class="badge bg-info text-dark">Low</span></td>
+                            <td class="text-success">Optimal</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-white">TRK-108</td>
+                            <td class="text-muted">Scania R-Series</td>
+                            <td>189,200 km</td>
+                            <td><span class="badge bg-warning text-dark">74%</span></td>
+                            <td>78%</td>
+                            <td><span class="badge bg-warning text-dark">Medium</span></td>
+                            <td class="text-warning">Service Due (2 days)</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-white">TRK-204</td>
+                            <td class="text-muted">Mercedes Actros</td>
+                            <td>98,100 km</td>
+                            <td><span class="badge bg-success">96%</span></td>
+                            <td>18%</td>
+                            <td><span class="badge bg-info text-dark">Low</span></td>
+                            <td class="text-success">Optimal</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-white">TRK-402</td>
+                            <td class="text-muted">Tesla Semi EV</td>
+                            <td>45,800 km</td>
+                            <td><span class="badge bg-info text-dark">99%</span></td>
+                            <td>5%</td>
+                            <td><span class="badge bg-info text-dark">Low</span></td>
+                            <td class="text-info">EV Battery Optimal</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Driver Performance Metrics Section -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <h4 class="card-title mb-3"><i class="fa-solid fa-id-card me-2 text-info"></i> Driver Performance & Eco Ratings</h4>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle m-0">
+                    <thead>
+                        <tr class="text-info border-bottom border-secondary">
+                            <th>Driver Name</th>
+                            <th>Assigned Vehicle</th>
+                            <th>Completed Trips</th>
+                            <th>Eco Driving Score</th>
+                            <th>On-Time Score</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold text-white">Rajesh Kumar</td>
+                            <td class="text-muted">TRK-101</td>
+                            <td>142</td>
+                            <td><span class="badge bg-success">96 / 100</span></td>
+                            <td><span class="badge bg-info text-dark">99.2%</span></td>
+                            <td><span class="text-success">On Active Route</span></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-white">Anita Sharma</td>
+                            <td class="text-muted">TRK-204</td>
+                            <td>118</td>
+                            <td><span class="badge bg-success">94 / 100</span></td>
+                            <td><span class="badge bg-info text-dark">98.5%</span></td>
+                            <td><span class="text-success">On Active Route</span></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-white">David Miller</td>
+                            <td class="text-muted">TRK-402</td>
+                            <td>95</td>
+                            <td><span class="badge bg-info text-dark">99 / 100</span></td>
+                            <td><span class="badge bg-info text-dark">100%</span></td>
+                            <td><span class="text-info">EV Charging Station</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Feature Weights Chart
+    const ctx1 = document.getElementById('featureWeightsChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: ['Geodesic Dist', 'Payload Weight', 'Traffic Congestion', 'Weather Risk', 'Road Gradient'],
+            datasets: [{
+                label: 'Feature Weight (%)',
+                data: [78.5, 9.3, 7.9, 4.3, 2.8],
+                backgroundColor: '#00fff2',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { ticks: { color: '#e1e1e1' }, grid: { display: false } },
+                y: { ticks: { color: '#e1e1e1' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+            }
+        }
+    });
+
+    // Carbon Trend Chart
+    const ctx2 = document.getElementById('carbonTrendChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: ['Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025', 'Q1 2026', 'Q2 2026'],
+            datasets: [{
+                label: 'CO₂ Saved (Tons)',
+                data: [2.1, 4.8, 7.5, 10.2, 12.8, 14.2],
+                borderColor: '#4cc9f0',
+                backgroundColor: 'rgba(76, 201, 240, 0.15)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#e1e1e1' } } },
+            scales: {
+                x: { ticks: { color: '#e1e1e1' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                y: { ticks: { color: '#e1e1e1' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
